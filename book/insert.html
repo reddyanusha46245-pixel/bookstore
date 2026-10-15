@@ -1,0 +1,113 @@
+<!-- To insert book data -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Insert Book</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="brand">📚 ANUSHA <span>BOOKSTORE</span><p class="tagline">Good Books • Better Tomorrows</p></div>
+
+    <h1>INSERT BOOK</h1>
+  <hr>
+
+  <a href="index.html">Home</a> |
+  <a href="list.html">List Books</a> |
+  <a href="listOne.html">List Required Book</a> |
+  <a href="insert.html">Insert Book</a> |
+  <a href="update.html">Update Book</a> |
+  <a href="delete.html">Delete Book</a>
+
+  <hr>
+
+  Book ID
+  <input type="number" id="book_id">
+  <br><br>
+
+  Title
+  <input type="text" id="title">
+  <br><br>
+
+  Author
+  <input type="text" id="author">
+  <br><br>
+
+  Category
+  <input type="text" id="category">
+  <br><br>
+
+  Price
+  <input type="number" id="price" step="0.01">
+  <br><br>
+
+  Stock
+  <input type="number" id="stock">
+  <br><br>
+
+  <button onclick="saveBook()">Save</button>
+
+  <br><br>
+
+  <button onclick="location.href='index.html'">
+    Home Page
+  </button>
+
+  <script>
+    function saveBook() {
+
+      let book_id = document.getElementById("book_id").value;
+      let title = document.getElementById("title").value;
+      let author = document.getElementById("author").value;
+      let category = document.getElementById("category").value;
+      let price = document.getElementById("price").value;
+      let stock = document.getElementById("stock").value;
+
+      if (
+        book_id === "" ||
+        title.trim() === "" ||
+        author.trim() === "" ||
+        category.trim() === "" ||
+        price === "" ||
+        stock === ""
+      ) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      fetch("/books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          book_id: book_id,
+          title: title,
+          author: author,
+          category: category,
+          price: price,
+          stock: stock
+        })
+      })
+        .then(response =>
+          response.text().then(message => {
+            if (!response.ok) {
+              throw new Error(message);
+            }
+            return message;
+          })
+        )
+        .then(message => {
+          alert(message);
+          location.href = "index.html";
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    }
+  </script>
+
+</body>
+
+</html>

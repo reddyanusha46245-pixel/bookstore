@@ -1,0 +1,207 @@
+<!-- To list one book data -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Search Book | Anusha Bookstore</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="brand">
+        📚 ANUSHA <span>BOOKSTORE</span>
+        <p class="tagline">Good Books • Better Tomorrows</p>
+    </div>
+
+    <h1>SEARCH BOOK</h1>
+    <hr>
+
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="list.html">List Books</a> |
+        <a href="listOne.html">List Required Book</a> |
+        <a href="insert.html">Insert Book</a> |
+        <a href="update.html">Update Book</a> |
+        <a href="delete.html">Delete Book</a>
+    </nav>
+
+    <hr>
+
+    <!-- Book ID Dropdown -->
+    <div class="search-section">
+
+        <label for="bno">Book ID:</label>
+
+        <select id="bno">
+            <option value="">-- Select Book ID --</option>
+        </select>
+
+        <button type="button" onclick="searchBook()">
+            Search
+        </button>
+
+    </div>
+
+    <br>
+
+    <p id="message"></p>
+
+    <!-- Book Details Table -->
+    <table border="1" id="bookTable">
+
+        <thead>
+            <tr>
+                <th>Book ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+
+        <tbody id="bookTableBody">
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <button type="button" onclick="location.href='index.html'">
+        Home Page
+    </button>
+
+    <script>
+
+        // Load Book IDs from MySQL into dropdown
+        async function loadBookIds() {
+
+            const dropdown = document.getElementById("bno");
+            const message = document.getElementById("message");
+
+            try {
+
+                const response = await fetch("/bookids");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load Book IDs");
+                }
+
+                const data = await response.json();
+
+                dropdown.innerHTML =
+                    '<option value="">-- Select Book ID --</option>';
+
+                data.forEach(book => {
+
+                    const option = document.createElement("option");
+
+                    option.value = book.book_id;
+                    option.textContent = book.book_id;
+
+                    dropdown.appendChild(option);
+
+                });
+
+                if (data.length === 0) {
+                    message.textContent = "No Book IDs found.";
+                } else {
+                    message.textContent = "";
+                }
+
+            } catch (error) {
+
+                console.error("Dropdown error:", error);
+
+                message.textContent =
+                    "Unable to load Book IDs. Check the server connection.";
+
+            }
+        }
+
+
+        // Search for a single book
+        async function searchBook() {
+
+            const bno = document.getElementById("bno").value;
+            const tableBody =
+                document.getElementById("bookTableBody");
+            const message = document.getElementById("message");
+
+            tableBody.innerHTML = "";
+            message.textContent = "";
+
+            if (bno === "") {
+                alert("Please select a Book ID");
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    "/books/" + encodeURIComponent(bno)
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch book details");
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    message.textContent = "Book Not Found";
+                    return;
+                }
+
+                data.forEach(book => {
+
+                    const row = document.createElement("tr");
+
+                    [
+                        book.book_id,
+                        book.title,
+                        book.author,
+                        book.category,
+                        book.price,
+                        book.stock
+                    ].forEach(value => {
+
+                        const cell = document.createElement("td");
+
+                        cell.textContent = value ?? "";
+
+                        row.appendChild(cell);
+
+                    });
+
+                    tableBody.appendChild(row);
+
+                });
+
+            } catch (error) {
+
+                console.error("Search error:", error);
+
+                message.textContent =
+                    "Unable to search book. Please check the server.";
+
+            }
+        }
+
+
+        // Load dropdown when page opens
+        document.addEventListener(
+            "DOMContentLoaded",
+            loadBookIds
+        );
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Book | Anusha Bookstore</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .form-card{max-width:760px;padding:24px;background:rgba(12,9,15,.88);border:1px solid var(--line);border-radius:16px;box-shadow:0 15px 45px #0007}
+    .form-grid{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px 16px;align-items:center}
+    .form-grid label{color:var(--pink-light);font-weight:650}
+    .form-grid input{width:100%;margin:0}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    .secondary{background:transparent;color:var(--pink-light);box-shadow:none}
+    .hint{color:var(--muted);line-height:1.6}
+    @media(max-width:520px){.form-grid{grid-template-columns:1fr;gap:7px}.form-grid input{margin-bottom:10px}}
+  </style>
+</head>
+<body>
+  <div class="brand">📚 ANUSHA <span>BOOKSTORE</span><p class="tagline">Good Books • Better Tomorrows</p></div>
+  <h1>UPDATE BOOK</h1>
+  <p class="hint">Enter the Book ID and select <strong>Load Book</strong>. Edit the details and save your changes.</p>
+  <nav aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="list.html">List Books</a>
+    <a href="listOne.html">Search Book</a>
+    <a href="insert.html">Insert Book</a>
+    <a href="update.html">Update Book</a>
+    <a href="delete.html">Delete Book</a>
+  </nav>
+  <hr>
+  <section class="form-card">
+    <div class="form-grid">
+      <label for="book_id">Book ID</label><input type="number" id="book_id" placeholder="Enter Book ID" min="1">
+      <label for="title">Title</label><input type="text" id="title" placeholder="Enter book title">
+      <label for="author">Author</label><input type="text" id="author" placeholder="Enter author name">
+      <label for="category">Category</label><input type="text" id="category" placeholder="Enter category">
+      <label for="price">Price</label><input type="number" id="price" placeholder="Enter price" min="0" step="0.01">
+      <label for="stock">Stock</label><input type="number" id="stock" placeholder="Enter stock quantity" min="0" step="1">
+    </div>
+    <div class="actions">
+      <button type="button" onclick="loadBook()">🔍 Load Book</button>
+      <button type="button" onclick="updateBook()">💾 Update Book</button>
+      <button type="button" class="secondary" onclick="clearForm()">✕ Clear</button>
+      <button type="button" class="secondary" onclick="location.href='index.html'">⌂ Home Page</button>
+    </div>
+  </section>
+  <script>
+    const fields = ['book_id', 'title', 'author', 'category', 'price', 'stock'];
+    function readBookId() {
+      const id = document.getElementById('book_id').value.trim();
+      if (!id) { alert('Please enter Book ID'); return null; }
+      return id;
+    }
+    function loadBook() {
+      const id = readBookId();
+      if (!id) return;
+      fetch('/books/' + encodeURIComponent(id))
+        .then(async response => {
+          if (!response.ok) throw new Error(await response.text() || 'Failed to load book details');
+          return response.json();
+        })
+        .then(data => {
+          const book = Array.isArray(data) ? data[0] : data;
+          if (!book || book.book_id == null) throw new Error('Book not found');
+          fields.forEach(field => {
+            if (book[field] !== undefined && book[field] !== null) document.getElementById(field).value = book[field];
+          });
+          alert('Book details loaded. You can now edit the fields.');
+        })
+        .catch(error => alert(error.message || 'Could not load book.'));
+    }
+    function updateBook() {
+      const id = readBookId();
+      if (!id) return;
+      const book = {
+        book_id: id,
+        title: document.getElementById('title').value.trim(),
+        author: document.getElementById('author').value.trim(),
+        category: document.getElementById('category').value.trim(),
+        price: document.getElementById('price').value,
+        stock: document.getElementById('stock').value
+      };
+      if (!book.title || !book.author || !book.category || book.price === '' || book.stock === '') {
+        alert('Please load the book and fill in all fields.'); return;
+      }
+      if (Number(book.price) < 0 || Number(book.stock) < 0) { alert('Price and stock cannot be negative.'); return; }
+      fetch('/books/' + encodeURIComponent(id), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(book)
+      })
+        .then(async response => {
+          const message = await response.text();
+          if (!response.ok) throw new Error(message || 'Failed to update book. Check that your backend supports PUT /books/:id.');
+          return message || 'Book updated successfully.';
+        })
+        .then(message => { alert(message); location.href = 'list.html'; })
+        .catch(error => alert(error.message || 'Could not update book.'));
+    }
+    function clearForm() { fields.forEach(field => document.getElementById(field).value = ''); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!-- To list all books data -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>List Books</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="brand">📚 ANUSHA <span>BOOKSTORE</span>
+        <p class="tagline">Good Books • Better Tomorrows</p>
+    </div>
+
+    <h1>LIST OF BOOKS</h1>
+    <hr>
+
+    <a href="index.html">Home</a> |
+    <a href="list.html">List Books</a> |
+    <a href="listOne.html">List Required Book</a> |
+    <a href="insert.html">Insert Book</a> |
+    <a href="update.html">Update Book</a> |
+    <a href="delete.html">Delete Book</a>
+
+    <hr>
+
+    <button onclick="loadBooks()">
+        Refresh List
+    </button>
+
+    <br><br>
+
+    <table border="1" id="bookTable">
+    </table>
+
+    <br>
+
+    <button onclick="location.href='index.html'">
+        Home Page
+    </button>
+
+    <script>
+        loadBooks();
+
+        function loadBooks() {
+            fetch("/books")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to load books");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    let table = document.getElementById("bookTable");
+
+                    table.innerHTML = `
+                        <tr>
+                            <th>book_id</th>
+                            <th>title</th>
+                            <th>author</th>
+                            <th>category</th>
+                            <th>price</th>
+                            <th>stock</th>
+                        </tr>`;
+
+                    data.forEach(book => {
+                        table.innerHTML += `
+                            <tr>
+                                <td>${book.book_id}</td>
+                                <td>${book.title}</td>
+                                <td>${book.author}</td>
+                                <td>${book.category}</td>
+                                <td>${book.price}</td>
+                                <td>${book.stock}</td>
+                            </tr>
+                        `;
+                    });
+
+                })
+                .catch(error => {
+                    alert("Error loading books: " + error.message);
+                });
+        }
+    </script>
+
+</body>
+
+</html>

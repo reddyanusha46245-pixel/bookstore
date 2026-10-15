@@ -1,0 +1,236 @@
+/* Anusha Bookstore - pink & black theme */
+:root {
+    --pink: #ff5fa2;
+    --pink-light: #ffc0df;
+    --black: #09080d;
+    --panel: #17131c;
+    --text: #fff5fb;
+    --muted: #e6cbd9;
+    --line: #fa8cbd
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background: linear-gradient(90deg, rgba(7, 6, 12, .94), rgba(12, 8, 15, .77)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=85') center/cover fixed no-repeat;
+    background-color: var(--black);
+    padding: 28px clamp(14px, 4vw, 56px)
+}
+
+body:before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 85% 15%, rgba(255, 95, 162, .13), transparent 35%);
+    z-index: -1
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: 1px;
+    margin: 8px 0 20px;
+    color: #fff;
+    font-weight: 850;
+    text-shadow: 0 3px 22px #000
+}
+
+h1:after {
+    content: " ♥";
+    color: var(--pink)
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 144, 194, .55);
+    margin: 20px 0
+}
+
+a {
+    color: var(--pink-light);
+    text-decoration: none;
+    font-weight: 650;
+    display: inline-block;
+    padding: 9px 12px;
+    border-radius: 22px;
+    transition: .2s
+}
+
+a:hover {
+    background: var(--pink);
+    color: #160912
+}
+
+body>a,
+body hr+a {
+    margin: 4px
+}
+
+button {
+    background: linear-gradient(135deg, var(--pink), #ff8fc2);
+    border: 1px solid #ffb6d8;
+    color: #170812;
+    border-radius: 12px;
+    padding: 11px 19px;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 5px 18px #ff5fa226;
+    transition: transform .15s, filter .15s
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08)
+}
+
+input {
+    background: rgba(8, 7, 12, .85);
+    border: 1px solid #9f6681;
+    border-radius: 9px;
+    color: white;
+    padding: 11px 13px;
+    margin: 5px 0;
+    max-width: 100%;
+    outline: none
+}
+
+input:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px #ff5fa233
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1100px;
+    background: rgba(12, 9, 15, .91);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0
+}
+
+th {
+    background: var(--pink);
+    color: #1a0711;
+    text-align: left
+}
+
+th,
+td {
+    padding: 13px 15px;
+    border: 1px solid #6e4056
+}
+
+tr:nth-child(even) td {
+    background: rgba(255, 95, 162, .08)
+}
+
+body>button,
+body>input {
+    margin: 6px
+}
+
+#bookTable {
+    box-shadow: 0 12px 35px #0005
+}
+
+@media(max-width:700px) {
+    body {
+        padding: 18px 12px
+    }
+
+    body a {
+        padding: 8px 7px;
+        font-size: .9rem
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap
+    }
+
+    input {
+        width: 100%;
+        max-width: 360px
+    }
+}
+
+.brand {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #fff;
+    border-bottom: 1px solid #ff5fa277;
+    padding: 0 0 14px;
+    margin-bottom: 18px
+}
+
+.brand span {
+    color: var(--pink)
+}
+
+.tagline {
+    font-size: .82rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin: 5px 0 0;
+    font-weight: 500
+}
+
+
+/* Book ID Dropdown - Pink & Black Theme */
+select {
+    background: rgba(8, 7, 12, 0.95);
+    border: 1px solid var(--pink);
+    border-radius: 9px;
+    color: white;
+    padding: 11px 13px;
+    margin: 5px 0;
+    max-width: 100%;
+    min-width: 200px;
+    outline: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* Dropdown focus effect */
+select:focus {
+    border-color: var(--pink-light);
+    box-shadow: 0 0 0 3px #ff5fa233;
+}
+
+/* Dropdown options */
+select option {
+    background: #17131c;
+    color: #fff5fb;
+    padding: 10px;
+}
+
+/* Book ID label */
+label[for="book_id"] {
+    display: inline-block;
+    color: var(--pink-light);
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 700px) {
+    select {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    label[for="book_id"] {
+        display: block;
+        margin-bottom: 5px;
+    }
+}
